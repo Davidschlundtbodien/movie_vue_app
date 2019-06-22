@@ -10,6 +10,18 @@
       Known For: <input type="text" v-model="newActorKnownFor"><br>
       <button v-on:click="createActor()">Create Actor</button>
     </div>
+
+    Search by name: <input v-model="nameFilter" list="names">
+    <datalist id="names">
+      <option v-for="actor in actors">{{ actor.first_name }} {{ actor.last_name }}</option>
+    </datalist>
+    
+    <div v-for="actors in orderBy(filterBy(actors, nameFilter, 'last_name'), 'last_name')">
+
+      <div>
+        <button>Sort Alphabetically</button>
+      </div>
+
     <div v-for="actor in actors">
       <h2>{{ actor.first_name }} {{actor.last_name}}</h2>
       <button v-on:click="showActor(actor)">Show more</button>
@@ -33,8 +45,10 @@
 
 <script>
 import axios from "axios";
+import Vue2Filters from "vue2-filters";
 
 export default {
+  mixins: [Vue2Filters.mixin],
   data: function() {
     return {
       currentActor: {},
@@ -43,7 +57,8 @@ export default {
       newActorLastName: "",
       newActorAge: "",
       newActorGender: "",
-      newActorKnownFor: ""
+      newActorKnownFor: "",
+      nameFilter: ''
     };
   },
   created: function() {
